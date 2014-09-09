@@ -22,7 +22,6 @@ class Command(BaseCommand):
     latest_temp_time = ''
 
     def refresh_temp(self):
-        #output_path = os.path.join(self.working_dir, 'temper.out')
         d = datetime.now()
         f = open(self.output_path, 'w')
         f.write(datetime.strftime(d, '%Y-%m-%d %X'))
