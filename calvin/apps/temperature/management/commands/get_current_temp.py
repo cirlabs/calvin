@@ -15,6 +15,7 @@ class Command(BaseCommand):
     help = "Updates Application objects' ag_use boolean using record_id."
 
     output_path = os.path.join(settings.BASE_DIR, 'data', 'temper.out')
+    from_email = settings.FROM_EMAIL
     email_list = settings.EMAIL_LIST
 
     def refresh_temp(self):
@@ -45,7 +46,7 @@ class Command(BaseCommand):
         send_mail(
             'Important Temperature Warning',
             message,
-            'mcorey@cironline.org',
+            self.from_email,
             self.email_list,
             fail_silently=False
         )
