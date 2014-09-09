@@ -18,6 +18,9 @@ class Command(BaseCommand):
     from_email = settings.FROM_EMAIL
     email_list = settings.EMAIL_LIST
 
+    latest_temp = ''
+    latest_temp_time = ''
+
     def refresh_temp(self):
         #output_path = os.path.join(self.working_dir, 'temper.out')
         d = datetime.now()
@@ -25,7 +28,7 @@ class Command(BaseCommand):
         f.write(datetime.strftime(d, '%Y-%m-%d %X'))
         f.write('\n')
         f.close()
-        call('sudo temper-poll >> %s' % (self.output_path,), shell=True)
+        call('sudo temper-poll >> %s' % (self.output_path,), shell=True)  # This is a pretty hacky way to do this. We send the output of the command to a text file, then pick it up with parse. Must be a way to run temper-poll directly, and without sudo.
 
     def parse_temp(self):
 
@@ -35,13 +38,14 @@ class Command(BaseCommand):
 
         timestamp_regex = r'(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})'
         timestamp_match = re.search(timestamp_regex, contents)
-        temp_time = datetime.strptime(timestamp_match.group(0), '%Y-%m-%d %X')
+        self.latest_temp_time = datetime.strptime(timestamp_match.group(0), '%Y-%m-%d %X')
 
-        temp_regex = r'(\d{1,3}\.\d\S+F)'
+        temp_regex = r'(\d{1,3}\.\d\S+F)'  # Right now this is a pretty lazy regex, and returns the degrees sign and "F". Could (and should) be easily modified to be a float.
         temp_match = re.search(temp_regex, contents)
-        temp = temp_match.group(0)
+        self.latest_temp = temp_match.group(0)
 
-        message = 'The time is %s, and it\'s %s at Mike\'s desk.' % (temp_time.time(), temp,)
+    def send_message(self):
+        message = 'The time is %s, and it\'s %s at Mike\'s desk.' % (self.latest_temp_time.time(), self.latest_temp,)
         logger.info(message)
         send_mail(
             'Important Temperature Warning',
@@ -55,8 +59,8 @@ class Command(BaseCommand):
         try:
             self.refresh_temp()
             self.parse_temp()
+            self.send_message()
 
-            #call_command('generate_concern_cats', interactive=True)
             logger.info("hello, world.")
         except AttributeError:
             raise
