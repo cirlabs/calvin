@@ -1,4 +1,2 @@
 Django==1.7
 snmp-passpersist
-#-e git://github.com/tangentlabs/django-oscar.git#egg=django-oscar
-#-e git://github.com/padelt/temper-python.git#egg=temper-python
