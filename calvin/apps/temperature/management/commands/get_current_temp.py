@@ -27,7 +27,7 @@ class Command(BaseCommand):
         f.write(datetime.strftime(d, '%Y-%m-%d %X'))
         f.write('\n')
         f.close()
-        call('sudo temper-poll >> %s' % (self.output_path,), shell=True)  # This is a pretty hacky way to do this. We send the output of the command to a text file, then pick it up with parse. Must be a way to run temper-poll directly, and without sudo.
+        call('temper-poll >> %s' % (self.output_path,), shell=True)  # This is a pretty hacky way to do this. We send the output of the command to a text file, then pick it up with parse. Must be a way to run temper-poll directly, and without sudo.
 
     def parse_temp(self):
 
