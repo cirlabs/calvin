@@ -44,7 +44,7 @@ class Command(BaseCommand):
         self.latest_temp = temp_match.group(0)
 
     def send_message(self):
-        message = 'The time is %s, and it\'s %s at Mike\'s desk.' % (self.latest_temp_time.time(), self.latest_temp,)
+        message = 'The time is %s, and it\'s %s at the data disco.' % (self.latest_temp_time.time(), self.latest_temp,)
         logger.info(message)
         send_mail(
             'Important Temperature Warning',
