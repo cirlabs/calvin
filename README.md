@@ -13,6 +13,10 @@ https://github.com/padelt/temper-python
 
 You will probably need to do the part about "USB device permissions".
 
+To load the new user rules (not covered in that link):
+
+```sudo udevadm trigger```
+
 Also: From the online documentation for the TEMPer1 drivers:
 
 "It must be connect to the computer to start working." ("It" in this case being the thermometer.)
