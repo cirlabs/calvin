@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-
     url(r'^yo/', yo_view, name='yo'),
+
+    # TODO: Need media for latest image
 )
