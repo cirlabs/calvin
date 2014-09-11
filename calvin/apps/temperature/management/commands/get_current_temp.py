@@ -6,7 +6,9 @@ import re
 
 from django.core.management.base import BaseCommand
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
+
+from calvin.apps.temperature.utils import build_image
 
 logger = logging.getLogger('cir.custom')
 
@@ -20,6 +22,7 @@ class Command(BaseCommand):
 
     latest_temp = ''
     latest_temp_time = ''
+    latest_temp_num = 0
 
     def refresh_temp(self):
         d = datetime.now()
@@ -39,20 +42,27 @@ class Command(BaseCommand):
         timestamp_match = re.search(timestamp_regex, contents)
         self.latest_temp_time = datetime.strptime(timestamp_match.group(0), '%Y-%m-%d %X')
 
-        temp_regex = r'(\d{1,3}\.\d\S+F)'  # Right now this is a pretty lazy regex, and returns the degrees sign and "F". Could (and should) be easily modified to be a float.
+        temp_regex = r'(\d{1,3}\.\d)\S+F'  # Right now this is a pretty lazy regex, and returns the degrees sign and "F". Could (and should) be easily modified to be a float.
         temp_match = re.search(temp_regex, contents)
         self.latest_temp = temp_match.group(0)
+        self.latest_temp_num = float(temp_match.group(1))
 
     def send_message(self):
         message = 'The time is %s, and it\'s %s at the data disco.' % (self.latest_temp_time.time(), self.latest_temp,)
+        image_text = '%s F' % (self.latest_temp_num,)
         logger.info(message)
-        send_mail(
-            'Important Temperature Warning',
+
+        email = EmailMessage(
+            'Adorable Temperature Warning',
             message,
             self.from_email,
             self.email_list,
-            fail_silently=False
+            headers={'Reply-To': self.from_email}
         )
+
+        email.attach_file(build_image(image_text))
+
+        email.send()
 
     def handle(self, *args, **options):
         try:

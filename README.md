@@ -6,6 +6,9 @@ calvin
 Requires:
 
 The requirements, plus:
+
+libjpeg-dev
+libfreetype6-dev
 https://github.com/padelt/temper-python
 
 You will probably need to do the part about "USB device permissions".
