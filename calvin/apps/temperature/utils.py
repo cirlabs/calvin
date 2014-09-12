@@ -1,4 +1,5 @@
 import os
+import uuid
 
 from PIL import Image, ImageFont, ImageDraw
 # from __future__ import print_function
@@ -28,6 +29,8 @@ def build_image(message):
 
     draw.text((hed_x, hed_y), hed_message, font=font, fill=font_color)
 
-    im.save(os.path.join(media_dir, 'test.jpg'))
+    my_uuid = uuid.uuid1()
+    export_path = os.path.join(media_dir, 'finished_photos', '%s.jpg' % my_uuid)
+    im.save(export_path)
 
-    return os.path.join(media_dir, 'test.jpg')
+    return {'image_path': export_path, 'uuid': my_uuid}

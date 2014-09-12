@@ -9,6 +9,7 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 
 from calvin.apps.temperature.utils import build_image
+from calvin.apps.temperature.models import FinishedPhoto
 
 logger = logging.getLogger('cir.custom')
 
@@ -60,16 +61,29 @@ class Command(BaseCommand):
             headers={'Reply-To': self.from_email}
         )
 
-        email.attach_file(build_image(image_text))
+        image = build_image(image_text)
+        obj = FinishedPhoto(
+            photo=image['image_path'],
+            uuid=image['uuid'],
+            temperature=self.latest_temp_num
+        )
+        obj.save()
+
+        print obj.filename
+
+        email.attach_file(image['image_path'])
 
         email.send()
+
+        return obj
 
     def handle(self, *args, **options):
         try:
             self.refresh_temp()
             self.parse_temp()
-            self.send_message()
+            obj = self.send_message()
 
             logger.info("hello, world.")
+            return str(obj.uuid)
         except AttributeError:
             raise
