@@ -29,7 +29,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'myemail@cironline.org'
 EMAIL_HOST_PASSWORD = 'thepassword'  # Also works with 2-factor -- just add an app-specific password
 
-
 FROM_EMAIL = 'from@emailfrom.org'  # Who messages will be from
 EMAIL_LIST = ['luckyrecipient1@org.org', 'luckyrecipient2@org.org']  # Who will get messages
 ```

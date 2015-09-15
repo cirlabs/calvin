@@ -1,4 +1,8 @@
 import os
+import random
+import glob
+import re
+import fnmatch
 import uuid
 
 from PIL import Image, ImageFont, ImageDraw
@@ -7,10 +11,17 @@ from PIL import Image, ImageFont, ImageDraw
 from django.conf import settings
 
 
+def get_random_photo(dir_path):
+    files = [f for f in os.listdir(dir_path) if re.match(r'\S+\.jpg', f.lower())]
+    return os.path.join(dir_path, random.choice(files))
+
+
 def build_image(message):
     media_dir = os.path.join(settings.BASE_DIR, 'media')
 
-    im = Image.open(os.path.join(media_dir, "IMG_7420.JPG"))
+    random_image = get_random_photo(media_dir)
+
+    im = Image.open(random_image)
 
     font = ImageFont.truetype(os.path.join(settings.BASE_DIR, 'fonts', 'home_sweet_home.ttf'), im.size[0]/10)
     font_color = (255, 255, 255)
